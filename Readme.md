@@ -95,8 +95,8 @@ Each backend module follows `routes -> controller -> service -> validation`.
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/<your-username>/healthbridge-ai.git
-cd healthbridge-ai
+git clone https://github.com/vansh216/IIIT-Delhi.git
+cd IIT-Delhi
 ```
 
 ### 2. Start PostgreSQL
@@ -202,7 +202,6 @@ Voice / text input
   -> LLM extraction (Zod-validated)
   -> Patient confirms extracted information
   -> Specialty mapping to an allowed list
-  -> RAG over curated medical sources
   -> Guidance with source links and limitations
   -> Doctor matching and recommendations
 ```
@@ -224,7 +223,3 @@ Voice / text input
 Before deploying with real patients, complete clinical review, security testing, and a legal assessment of applicable healthcare and data-protection regulations.
 
 ---
-
-## License
-
-MIT
