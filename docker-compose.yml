@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: healthbridge-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: healthbridge
+      POSTGRES_PASSWORD: healthbridge_pw
+      POSTGRES_DB: healthbridge
+    ports:
+      - "5433:5432"
+    volumes:
+      - healthbridge_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U healthbridge"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  healthbridge_pgdata:
