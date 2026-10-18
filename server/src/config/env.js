@@ -8,7 +8,12 @@ const schema = z.object({
   DATABASE_URL: z.string().min(1, "DATABASE_URL is required"),
   JWT_SECRET: z.string().min(16, "JWT_SECRET must be at least 16 characters"),
   JWT_EXPIRES_IN: z.string().default("1d"),
+  JITSI_BASE_URL: z.string().url().default("https://meet.jit.si").transform((v) => v.replace(/\/$/, "")),
   OPENROUTER_API_KEY: z.string().optional().default(""),
+    TWILIO_ACCOUNT_SID: z.string().optional().default(""),
+  TWILIO_AUTH_TOKEN: z.string().optional().default(""),
+  TWILIO_WHATSAPP_FROM: z.string().optional().default(""),
+  DEFAULT_COUNTRY_CODE: z.string().optional().default("+91"),
   OPENROUTER_MODEL: z
     .string()
     .optional()
