@@ -5,7 +5,10 @@ import { extractInformation } from "../services/extraction.service.js";
 import { resolveSpecialtyNames } from "../services/specialty.service.js";
 import { audit } from "../utils/audit.js";
 
-const DISCLAIMER = "AI-generated from what you told us. This is not a diagnosis.";
+const DISCLAIMER = {
+  en: "AI read your description and pulled out the details above. Please check them and fix anything that is wrong. This is not a diagnosis. Only a doctor can assess your symptoms.",
+  hi: "AI ने आपके विवरण से ऊपर की जानकारी निकाली है। कृपया इसे जाँचें और जो गलत हो उसे ठीक करें। यह कोई निदान नहीं है। आपके लक्षणों की जाँच केवल डॉक्टर कर सकते हैं।",
+};
 
 async function getSpecialtyNames() {
   const rows = await prisma.specialization.findMany({ select: { name: true } });
