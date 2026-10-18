@@ -123,6 +123,7 @@ model Patient {
   appointments  Appointment[]
   savedDoctors  SavedDoctor[]
   reviews       Review[]
+   nurseBookings NurseBooking[]
 }
 
 model PatientCondition {
@@ -241,20 +242,25 @@ model Appointment {
   id                     String            @id @default(uuid())
   patientId              String
   doctorId               String
-  slotId                 String            @unique
+  slotId                 String?           @unique
+  startsAt               DateTime
+  endsAt                 DateTime
   healthQueryId          String?
   mode                   ConsultationMode
   status                 AppointmentStatus @default(PENDING)
   reason                 String?
   shareSummaryWithDoctor Boolean           @default(false)
+  meetingRoom            String?
+  meetingUrl             String?
   cancelledAt            DateTime?
+  cancelledBy            Role?
   cancelReason           String?
   createdAt              DateTime          @default(now())
   updatedAt              DateTime          @updatedAt
 
   patient     Patient               @relation(fields: [patientId], references: [id])
   doctor      Doctor                @relation(fields: [doctorId], references: [id])
-  slot        AvailabilitySlot      @relation(fields: [slotId], references: [id])
+  slot        AvailabilitySlot?     @relation(fields: [slotId], references: [id])
   healthQuery HealthQuery?          @relation(fields: [healthQueryId], references: [id])
   note        ConsultationNote?
   reminders   AppointmentReminder[]
@@ -262,6 +268,7 @@ model Appointment {
 
   @@index([patientId, status])
   @@index([doctorId, status])
+  @@index([doctorId, startsAt])
 }
 
 model ConsultationNote {
@@ -445,4 +452,76 @@ model AuditLog {
 
   @@index([userId, createdAt])
   @@index([entityType, entityId])
+}
+
+
+
+  enum NurseBookingStatus {
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+}
+
+model NurseServiceType {
+  id              String  @id @default(uuid())
+  name            String  @unique
+  slug            String  @unique
+  description     String
+  durationMinutes Int
+  price           Decimal @db.Decimal(10, 2)
+  patientNote     String?
+  isActive        Boolean @default(true)
+
+  nurses   Nurse[]
+  bookings NurseBooking[]
+}
+
+model Nurse {
+  id                 String             @id @default(uuid())
+  name               String
+  phone              String
+  city               String
+  yearsOfExperience  Int
+  qualification      String
+  registrationNumber String
+  licensingAuthority String
+  languages          String[]
+  workStartHour      Int                @default(9)
+  workEndHour        Int                @default(18)
+  verificationStatus VerificationStatus @default(PENDING)
+  isDemo             Boolean            @default(false)
+  createdAt          DateTime           @default(now())
+
+  services NurseServiceType[]
+  bookings NurseBooking[]
+
+  @@unique([registrationNumber, licensingAuthority])
+  @@index([city, verificationStatus])
+}
+
+model NurseBooking {
+  id           String             @id @default(uuid())
+  patientId    String
+  nurseId      String
+  serviceId    String
+  startsAt     DateTime
+  endsAt       DateTime
+  address      String
+  city         String
+  landmark     String?
+  notes        String?
+  price        Decimal            @db.Decimal(10, 2)
+  status       NurseBookingStatus @default(CONFIRMED)
+  cancelledAt  DateTime?
+  cancelReason String?
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+    reminderSentAt DateTime?
+
+  patient Patient          @relation(fields: [patientId], references: [id])
+  nurse   Nurse            @relation(fields: [nurseId], references: [id])
+  service NurseServiceType @relation(fields: [serviceId], references: [id])
+
+  @@index([nurseId, startsAt])
+  @@index([patientId, status])
 }
