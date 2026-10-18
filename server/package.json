@@ -13,7 +13,8 @@
     "db:deploy": "prisma migrate deploy",
     "db:generate": "prisma generate",
     "db:studio": "prisma studio",
-    "db:seed": "node prisma/seed.js"
+    "db:seed": "node prisma/seed.js",
+    "db:seed:nurses": "node prisma/seed-nurses.js"
   },
   "prisma": {
     "seed": "node prisma/seed.js"
